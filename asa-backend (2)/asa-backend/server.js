@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
@@ -12,17 +13,28 @@ const { seedAdmin } = require('./db/seedAdmin');
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(new Error('Not allowed by CORS: ' + origin));
-  },
-}));
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
-app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS: ' + origin));
+    },
+  })
+);
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    time: new Date().toISOString(),
+  });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
@@ -32,11 +44,14 @@ app.use('/api/settlement', settlementRoutes);
 // Generic error handler
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error.' });
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal server error.',
+  });
 });
 
 const PORT = process.env.PORT || 4000;
 
+// Automatically create admin on startup
 const seedResult = seedAdmin();
 console.log(`[startup] ${seedResult.error || seedResult.message}`);
 
