@@ -1,0 +1,24 @@
+{
+  "name": "asa-foods-backend",
+  "version": "1.0.0",
+  "description": "ASA Foods backend — orders, partner registration, banking details, weekly settlement, WhatsApp/email notifications.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed-admin": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.15",
+    "pdfkit": "^0.15.0"
+  }
+}
